@@ -22,8 +22,24 @@ class $ServicesTable extends Services with TableInfo<$ServicesTable, Service> {
   late final GeneratedColumn<String> frota = GeneratedColumn<String>(
       'frota', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _modeloMeta = const VerificationMeta('modelo');
   @override
-  List<GeneratedColumn> get $columns => [id, frota];
+  late final GeneratedColumn<String> modelo = GeneratedColumn<String>(
+      'modelo', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _setorMeta = const VerificationMeta('setor');
+  @override
+  late final GeneratedColumn<String> setor = GeneratedColumn<String>(
+      'setor', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _descricaoMeta =
+      const VerificationMeta('descricao');
+  @override
+  late final GeneratedColumn<String> descricao = GeneratedColumn<String>(
+      'descricao', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, frota, modelo, setor, descricao];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -43,6 +59,24 @@ class $ServicesTable extends Services with TableInfo<$ServicesTable, Service> {
     } else if (isInserting) {
       context.missing(_frotaMeta);
     }
+    if (data.containsKey('modelo')) {
+      context.handle(_modeloMeta,
+          modelo.isAcceptableOrUnknown(data['modelo']!, _modeloMeta));
+    } else if (isInserting) {
+      context.missing(_modeloMeta);
+    }
+    if (data.containsKey('setor')) {
+      context.handle(
+          _setorMeta, setor.isAcceptableOrUnknown(data['setor']!, _setorMeta));
+    } else if (isInserting) {
+      context.missing(_setorMeta);
+    }
+    if (data.containsKey('descricao')) {
+      context.handle(_descricaoMeta,
+          descricao.isAcceptableOrUnknown(data['descricao']!, _descricaoMeta));
+    } else if (isInserting) {
+      context.missing(_descricaoMeta);
+    }
     return context;
   }
 
@@ -56,6 +90,12 @@ class $ServicesTable extends Services with TableInfo<$ServicesTable, Service> {
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       frota: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}frota'])!,
+      modelo: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}modelo'])!,
+      setor: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}setor'])!,
+      descricao: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}descricao'])!,
     );
   }
 
@@ -68,28 +108,54 @@ class $ServicesTable extends Services with TableInfo<$ServicesTable, Service> {
 class ServicesCompanion extends UpdateCompanion<Service> {
   final Value<int> id;
   final Value<String> frota;
+  final Value<String> modelo;
+  final Value<String> setor;
+  final Value<String> descricao;
   const ServicesCompanion({
     this.id = const Value.absent(),
     this.frota = const Value.absent(),
+    this.modelo = const Value.absent(),
+    this.setor = const Value.absent(),
+    this.descricao = const Value.absent(),
   });
   ServicesCompanion.insert({
     this.id = const Value.absent(),
     required String frota,
-  }) : frota = Value(frota);
+    required String modelo,
+    required String setor,
+    required String descricao,
+  })  : frota = Value(frota),
+        modelo = Value(modelo),
+        setor = Value(setor),
+        descricao = Value(descricao);
   static Insertable<Service> custom({
     Expression<int>? id,
     Expression<String>? frota,
+    Expression<String>? modelo,
+    Expression<String>? setor,
+    Expression<String>? descricao,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (frota != null) 'frota': frota,
+      if (modelo != null) 'modelo': modelo,
+      if (setor != null) 'setor': setor,
+      if (descricao != null) 'descricao': descricao,
     });
   }
 
-  ServicesCompanion copyWith({Value<int>? id, Value<String>? frota}) {
+  ServicesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? frota,
+      Value<String>? modelo,
+      Value<String>? setor,
+      Value<String>? descricao}) {
     return ServicesCompanion(
       id: id ?? this.id,
       frota: frota ?? this.frota,
+      modelo: modelo ?? this.modelo,
+      setor: setor ?? this.setor,
+      descricao: descricao ?? this.descricao,
     );
   }
 
@@ -102,6 +168,15 @@ class ServicesCompanion extends UpdateCompanion<Service> {
     if (frota.present) {
       map['frota'] = Variable<String>(frota.value);
     }
+    if (modelo.present) {
+      map['modelo'] = Variable<String>(modelo.value);
+    }
+    if (setor.present) {
+      map['setor'] = Variable<String>(setor.value);
+    }
+    if (descricao.present) {
+      map['descricao'] = Variable<String>(descricao.value);
+    }
     return map;
   }
 
@@ -109,7 +184,10 @@ class ServicesCompanion extends UpdateCompanion<Service> {
   String toString() {
     return (StringBuffer('ServicesCompanion(')
           ..write('id: $id, ')
-          ..write('frota: $frota')
+          ..write('frota: $frota, ')
+          ..write('modelo: $modelo, ')
+          ..write('setor: $setor, ')
+          ..write('descricao: $descricao')
           ..write(')'))
         .toString();
   }

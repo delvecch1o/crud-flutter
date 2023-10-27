@@ -7,16 +7,25 @@ part 'drift.g.dart';
 class Services extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get frota => text()();
+  TextColumn get modelo => text()();
+  TextColumn get setor => text()();
+  TextColumn get descricao => text()();
  
 }
 
 class Service {
   final int id;
   final String frota;
+  final String modelo;
+  final String setor;
+  final String descricao;
  
   Service(
       {required this.id,
       required this.frota,
+      required this.modelo,
+      required this.setor,
+      required this.descricao,
       });
 }
 
