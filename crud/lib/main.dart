@@ -82,37 +82,41 @@ class ServicesListScreenState extends State<ServicesListScreen> {
     await database
         .deleteServices(
           ServicesCompanion(
-              id: Value(service.id),
-              frota: Value(service.frota),
-              modelo: Value(service.modelo),
-              setor: Value(service.setor),
-              descricao: Value(service.descricao),
-
-             ),
+            id: Value(service.id),
+            frota: Value(service.frota),
+            modelo: Value(service.modelo),
+            setor: Value(service.setor),
+            descricao: Value(service.descricao),
+          ),
         )
         .then((_) => _loadServices());
   }
 
   Future<void> _attService(Service service) async {
     final alteredService = ServicesCompanion(
-        id: Value(service.id),
-        frota: Value(service.frota),
-        modelo: Value(service.modelo),
-        setor: Value(service.setor),
-        descricao: Value(service.descricao),
-       );
+      id: Value(service.id),
+      frota: Value(service.frota),
+      modelo: Value(service.modelo),
+      setor: Value(service.setor),
+      descricao: Value(service.descricao),
+    );
     await database.updateServices(alteredService).then((_) => _loadServices());
   }
 
-  Future<void> _addServices(String frota, String modelo, String setor, String descricao) async {
+  Future<void> _addServices(
+      String frota, String modelo, String setor, String descricao) async {
     final newService = ServicesCompanion.insert(
-        frota: frota, modelo: modelo, setor: setor, descricao: descricao );
+        frota: frota, modelo: modelo, setor: setor, descricao: descricao);
 
     await database.insertServices(newService).then((_) {
       _loadServices();
       _controller.clear();
     });
   }
+
+  List listItemSetor = ["CD - Secos", "CD - Frios", "CD - FLV", "CD - Reversa"];
+
+  List listItemModelo = [ "EXR - Direção Mecânica", "ERX - Direção Elétrica", "EGU - 20C", "EGU - T18", "Linde RC - 17", "FMX - NG" ];
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +128,6 @@ class ServicesListScreenState extends State<ServicesListScreen> {
             shrinkWrap: true,
             itemCount: _services.length,
             itemBuilder: (context, i) {
-              
               return Container(
                 margin: const EdgeInsets.all(4.0),
                 decoration: BoxDecoration(
@@ -134,12 +137,11 @@ class ServicesListScreenState extends State<ServicesListScreen> {
                 ),
                 child: ListTile(
                   textColor: Colors.white,
-                  title: Text(
-                      'Frota: ${_services[i].frota} '),
+                  title: Text('Frota: ${_services[i].frota} '),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                     Text(
+                      Text(
                         'Modelo: ${_services[i].modelo}',
                       ),
                       Text(
@@ -196,23 +198,47 @@ class ServicesListScreenState extends State<ServicesListScreen> {
               return AlertDialog(
                 title: const Text('Adicionar O.S'),
                 content: Column(children: [
-                  TextFormField(
-                    controller: frotaController,
-                    decoration: const InputDecoration(labelText: 'Frota: Ex. P10'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextFormField(
+                      controller: frotaController,
+                      decoration:
+                          const InputDecoration(labelText: 'Frota: Ex. P10'),
+                    ),
                   ),
-                  TextFormField(
-                    controller: modeloController,
-                    decoration: const InputDecoration(labelText: 'Modelo'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'Modelo'),
+                        items: listItemModelo
+                            .map<DropdownMenuItem<String>>((value) {
+                          return DropdownMenuItem<String>(
+                              child: Text(value), value: value);
+                        }).toList(),
+                        onChanged: (selectModelo) {
+                          modeloController.text = selectModelo!;
+                        }),
                   ),
-                   TextFormField(
-                    controller: setorController,
-                    decoration: const InputDecoration(labelText: 'Setor'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(labelText: 'Setor'),
+                        items: listItemSetor
+                            .map<DropdownMenuItem<String>>((value) {
+                          return DropdownMenuItem<String>(
+                              child: Text(value), value: value);
+                        }).toList(),
+                        onChanged: (selectSetor) {
+                          setorController.text = selectSetor!;
+                        }),
                   ),
-                   TextFormField(
-                    controller: descricaoController,
-                    decoration: const InputDecoration(labelText: 'Descrição'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    child: TextFormField(
+                      controller: descricaoController,
+                      decoration: const InputDecoration(labelText: 'Descrição'),
+                    ),
                   ),
-                 
                 ]),
                 actions: [
                   TextButton(
@@ -227,13 +253,11 @@ class ServicesListScreenState extends State<ServicesListScreen> {
                       String modelo = modeloController.text;
                       String setor = setorController.text;
                       String descricao = descricaoController.text;
-                      
+
                       if (isValidFrota(frota) ||
                           isValidModelo(modelo) ||
                           isValidSetor(setor) ||
-                          isValidDescricao(descricao)
-                      
-                        ) {
+                          isValidDescricao(descricao)) {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
@@ -258,7 +282,6 @@ class ServicesListScreenState extends State<ServicesListScreen> {
                         modeloController.clear();
                         setorController.clear();
                         descricaoController.clear();
-                        
                       }
                     },
                     child: const Text('Salvar'),
